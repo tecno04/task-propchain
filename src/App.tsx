@@ -6,17 +6,25 @@ import { ListingsPage } from './pages/ListingsPage';
 import { PropertyDetailPage } from './pages/PropertyDetailPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { useAuthCrypto } from './store/auth.store';
+import { Toaster, toast } from 'sonner'
 
 const AppContent: React.FC = () => {
-  const [walletConnected, setWalletConnected] = useState(false);
+  // const [walletConnected, setWalletConnected] = useState(false);
   const [favorites, setFavorites] = useState(['1', '4']);
   const navigate = useNavigate();
 
+  const { loginWallet, allowed, error } = useAuthCrypto()
+
   const handleConnectWallet = () => {
     // Mock wallet connection with animation
-    setTimeout(() => {
-      setWalletConnected(!walletConnected);
-    }, 1000);
+    // setTimeout(() => {
+    //   setWalletConnected(!walletConnected);
+    // }, 1000);
+    if(error){
+      toast.error("No detected Metamask installed, plis, install metamask to interactive to propchain")
+    }
+    loginWallet();
   };
 
   const handleToggleFavorite = (propertyId: string) => {
@@ -35,7 +43,7 @@ const AppContent: React.FC = () => {
     <>
       <Navbar 
         onConnectWallet={handleConnectWallet}
-        walletConnected={walletConnected}
+        walletConnected={ allowed }
       />
       
       <Routes>
@@ -75,12 +83,13 @@ const AppContent: React.FC = () => {
           path="/dashboard" 
           element={
             <DashboardPage 
-              walletConnected={walletConnected}
+              walletConnected={allowed}
               onConnectWallet={handleConnectWallet}
             />
           } 
         />
       </Routes>
+      <Toaster closeButton={true} duration={3000} position='top-center'/>
     </>
   );
 };

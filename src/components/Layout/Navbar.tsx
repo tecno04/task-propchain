@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Heart, User, Wallet } from 'lucide-react';
+import { Home, Wallet } from 'lucide-react';
+import { useAuthCrypto } from '../../store/auth.store';
 
 interface NavbarProps {
   onConnectWallet: () => void;
@@ -8,7 +9,9 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onConnectWallet, walletConnected }) => {
+
   const location = useLocation();
+  const { address } = useAuthCrypto();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -81,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onConnectWallet, walletConnected
             >
               <Wallet className="w-4 h-4" />
               <span className="hidden sm:block">
-                {walletConnected ? 'Wallet Connected' : 'Connect Wallet'}
+                {walletConnected ? address : 'Connect Wallet'}
               </span>
             </button>
           </div>
